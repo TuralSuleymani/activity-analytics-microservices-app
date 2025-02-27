@@ -135,7 +135,6 @@ The dashboard displays:
 
 3. **Run the Tracking Service:**
    ```bash
-   cd TrackingService
    dotnet run
    ```
 
