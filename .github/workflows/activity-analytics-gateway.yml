@@ -43,12 +43,23 @@ jobs:
       with:
         name: webapp
         path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+    - name: Debug auth values presence (safe)
+      run: |
+        test -n "${AZURE_CLIENT_ID}" && echo "CLIENT_ID present" || (echo "CLIENT_ID missing" && exit 1)
+        test -n "${AZURE_TENANT_ID}" && echo "TENANT_ID present" || (echo "TENANT_ID missing" && exit 1)
+        test -n "${AZURE_SUBSCRIPTION_ID}" && echo "SUBSCRIPTION_ID present" || (echo "SUBSCRIPTION_ID missing" && exit 1)
+      env:
+        AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
     - name: Azure Login
       uses: azure/login@v2
       with:
-        client-id: ${{ vars.activity_analytics_gateway_CLIENT_ID_6015 }}
-        tenant-id: ${{ vars.activity_analytics_gateway_TENANT_ID_6015 }}
-        subscription-id: ${{ vars.activity_analytics_gateway_SUBSCRIPTION_ID_6015 }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
